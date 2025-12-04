@@ -29,8 +29,11 @@ Now that I have described the variables, I want you to produce a spreadsheet. He
 - stack_years: this is a synonym for amortization_years
 
 So this is what you do each month:
-1. If total_cashflow ≥ (flip_size × 1.5) then flip_size = (flip_size × 1.5)
-2. If borrowed > 0, pay it down using total_cashflow (i.e., borrowed = max(0, borrowed − total_cashflow)).
-3. If `borrowed` is less than `total_cashflow` then, In this month we borrow flip_size and buy an investment that we expect `amortization_percentage` to be returned over `amortization_years` in monthly payments of `monthly_roi`. The first payment on this newly bought investment will be in the next month and be added to the `stacked_roi` column for as long as it pays. We increment `borrowed` by the newly borrowed amount, e.g: borrowed += flip_size.
+1. Start of month: Calculate total_cashflow = personal_cashflow + stacked_roi
+2. Check flip_size increase: If total_cashflow ≥ (flip_size × 1.5) / paydown_time, then flip_size = flip_size × 1.5
+3. Check for borrowing opportunity: If borrowed == 0 OR (borrowed > 0 AND total_cashflow > borrowed), then:
+   - Borrow flip_size
+   - Start new investment (first payment next month)
+4. Pay down borrowed: borrowed = max(0, borrowed - total_cashflow)
 
 The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. 
