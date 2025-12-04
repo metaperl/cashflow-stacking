@@ -31,7 +31,6 @@ Now that I have described the variables, I want you to produce a spreadsheet. He
 So this is what you do each month:
 1. if `borrowed` > 0 then pay down `borrowed` with `total_cashflow` and continue to step 2.
 2. if `borrowed` is less than `personal_cashflow` then:
-  2a: in this month we borrow flip_amount and buy an investment that we expect `amortization_percentage` to be returned over `amortization_years` in monthly payments of `monthly_roi`. The first payment will be in the next month and be added to the `stacked_roi` column.
-  2b: We add the borrowed amount to the current value of `borrowed`
+  In this month we borrow flip_amount and buy an investment that we expect `amortization_percentage` to be returned over `amortization_years` in monthly payments of `monthly_roi`. The first payment will be in the next month and be added to the `stacked_roi` column. We add the borrowed amount to the current value of `borrowed`
 
 The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. You need to know.
