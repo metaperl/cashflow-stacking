@@ -8,13 +8,13 @@ personal_cashflow: This is the difference between personal_income and personal_e
 
 paydown_time: This is the maximum amount of months you want to spend to repay borrowed capital. 5 is a typical default value for paydown_time. You dont want to spend 10 months paying back borrowed capital and it is not realistic to want to pay it back in 2-3 months. Most people aim for a paydown_time for 4 or 5 months.
 
-flip_amount: The flip_amount is the amount of capital that you borrow with the intent of paying it down within a certain number of months or slightly less. Here is how you calculate flip_amount initially: personal_cashflow * 5. Later, flip_amount will increase by 50%. The flip_amount growth rule is: when total_cashflow is greater than (flip_amount + flip_amount*.5), then we increase the flip_amount by 50% and that will be the amount we borrow when it is time to borrow capital again. 
+flip_size: The flip_size is the amount of capital that you borrow with the intent of paying it down within a certain number of months or slightly less. Here is how you calculate flip_size initially: personal_cashflow * 5. 
 
 amortization_years: the number of years that an amortized investment pays. This value is typically 3, but could be 2.
 
 amortization_percentage: this integer shows the percent return of the investment.
 
-monthly_roi: this is the expected monthly amortized return of the investment. The overall_return is `amortization_percentage` over `amortization_years`. The monthly_roi is a monthly payment of that overall_return. For instance, if `flip_amount` is $10,000, then you will buy an amortized investment with that $10,000 and it will make monthly returns on investment for `amortization_years`. Therefore, if the amortization_percentage is 12, then monthly payments of $332.14 can be expected for 3 years because $10,000 amortized at an interest rate of 12% for 3 years leads to that monthly_roi, as this shows - https://tinyurl.com/pkbwfsx2  ... you are expected to use a true amortizing loan formula, e.g: P * r / (1 – (1+r)^(-n)) …where r = annual_interest/12, n = years*12.
+monthly_roi: this is the expected monthly amortized return of the investment. The overall_return is `amortization_percentage` over `amortization_years`. The monthly_roi is a monthly payment of that overall_return. For instance, if `flip_size` is $10,000, then you will buy an amortized investment with that $10,000 and it will make monthly returns on investment for `amortization_years`. Therefore, if the amortization_percentage is 12, then monthly payments of $332.14 can be expected for 3 years because $10,000 amortized at an interest rate of 12% for 3 years leads to that monthly_roi, as this shows - https://tinyurl.com/pkbwfsx2  ... you are expected to use a true amortizing loan formula, e.g: P * r / (1 – (1+r)^(-n)) …where r = annual_interest/12, n = years*12.
 
 
 Now that I have described the variables, I want you to produce a spreadsheet. Here are the columns in the spreadsheet:
@@ -22,15 +22,15 @@ Now that I have described the variables, I want you to produce a spreadsheet. He
 - personal_cashflow: a constant calculated from personal_income and personal_expenses
 - stacked_roi: this is sum of the roi of all purchased amortized investments. Remember, each time we buy an investment, we expect `monthly_roi` from that investment for `amortization_years`. Therefore as we buy investments, the `monthly_roi` from each investment will "stack" leading to this column being the sum of all monthly purchased investments.
 - total_cashflow
-- borrowed: this starts out with the value zero. Once you borrow capital, it becomes `flip_amount`. And each month as you pay it down with `total_cashflow` it reduces.
+- borrowed: this starts out with the value zero. Whenever you borrow `flip_size`,  borrowed += flip_size. And each month as you reduce `borrowed` by `total_cashflow` it reduces.
 - stack_number: each time you buy an investment, this number increases
 - stack_date: the date that you bought this new investment
 - monthly_roi: the monthly roi expected from this stack
 - stack_years: this is a synonym for amortization_years
 
 So this is what you do each month:
-1. if `borrowed` > 0 then pay down `borrowed` with `total_cashflow` and continue to step 2.
-2. if `borrowed` is less than `personal_cashflow` then:
-  In this month we borrow flip_amount and buy an investment that we expect `amortization_percentage` to be returned over `amortization_years` in monthly payments of `monthly_roi`. The first payment will be in the next month and be added to the `stacked_roi` column. We add the borrowed amount to the current value of `borrowed`
+1. If total_cashflow ≥ (flip_size × 1.5) then flip_size = (flip_size × 1.5)
+2. If borrowed > 0, pay it down using total_cashflow (i.e., borrowed = max(0, borrowed − total_cashflow)).
+3. If `borrowed` is less than `total_cashflow` then, In this month we borrow flip_size and buy an investment that we expect `amortization_percentage` to be returned over `amortization_years` in monthly payments of `monthly_roi`. The first payment on this newly bought investment will be in the next month and be added to the `stacked_roi` column for as long as it pays. We increment `borrowed` by the newly borrowed amount.
 
 The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. You need to know.
