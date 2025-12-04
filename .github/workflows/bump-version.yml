@@ -1,0 +1,52 @@
+name: Auto Version Bump
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  bump-version:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write   # Required to push commits
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Read current version
+      id: get_version
+      run: |
+        if [ ! -f VERSION ]; then
+          echo "0.0.0" > VERSION
+        fi
+        VERSION=$(cat VERSION)
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+    - name: Increment version
+      id: bump
+      run: |
+        OLD_VERSION="${{ steps.get_version.outputs.version }}"
+        IFS='.' read -r major minor patch <<< "$OLD_VERSION"
+        patch=$((patch + 1))
+        NEW_VERSION="$major.$minor.$patch"
+        echo $NEW_VERSION > VERSION
+        echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Commit version bump
+      run: |
+        NEW_VERSION="${{ steps.bump.outputs.new_version }}"
+        git config --global user.name "github-actions"
+        git config --global user.email "github-actions@github.com"
+        git add VERSION
+        git commit -m "Bump version to $NEW_VERSION"
+        git push
+
+    - name: Create Git tag (optional)
+      run: |
+        NEW_VERSION="${{ steps.bump.outputs.new_version }}"
+        git tag "v$NEW_VERSION"
+        git push origin "v$NEW_VERSION"
