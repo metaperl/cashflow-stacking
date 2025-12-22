@@ -17,6 +17,7 @@ Most people aim for a `paydown_time` of 4 or 5 months.
 it down within a certain number of months or slightly less. 
 Here is how you calculate `flip_size` initially: personal_cashflow * 5. 
 
+
 `amortization_years`: the number of years that an amortized investment pays. 
 This value is typically 3, but could be 2.
 
@@ -49,9 +50,23 @@ Now that I have described the variables, I want you to produce a spreadsheet. He
 
 
 This is what you do each month:
+
+`bump_factor`: the amount to increase `flip_size` by when `total_cashflow` 
+has increased so that a larger loan can be paid down in `paydown_time`.
+The standard `bump_factor` is 1.5 
+
+`threshold`: the specific value of `total_cashflow` required to trigger an upgrade to the next level of `flip_size`
+We define threshold as (flip_size × 1.5) / paydown_time
+
+`fudge_factor`: strictly speaking, we only increase `flip_size` when total_cashflow >= threshold, but this leads to 
+rigid calculations where we do not bump our flip_size even when `total_cashflow` is only a hair below threshold. Thus
+we introduce a default `fudge_factor` of 0.90 so that as long as `total_cashflow` is within 10% of the threshold we
+go ahead and increase `flip_size`
+
+
 1. stacked_roi = sum of monthly_roi for all investments still paying (each lasts 36 months from purchase date).
 2. total_cashflow = personal_cashflow + stacked_roi. Duplicate the value`total_cashflow` into `this_months_cashflow`.
-3. Check flip_size increase: if total_cashflow ≥ (flip_size × 1.5) / paydown_time then flip_size = flip_size × 1.5.
+3. Check flip_size increase: if total_cashflow ≥ threshold * fudge_factor then flip_size = flip_size × 1.5.
 4. Check borrow opportunity: if borrowed < this_months_cashflow, borrow flip_size and buy an investment that starts paying next month. Increment stack counter, record date, stack_years = 3, monthly_roi for that stack = amortized payment based on current flip_size.
 5. Pay down borrowed: borrowed = max(0, borrowed - total_cashflow).
 
