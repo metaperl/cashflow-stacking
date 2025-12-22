@@ -42,8 +42,8 @@ Now that I have described the variables, I want you to produce a spreadsheet. He
 - `total_cashflow`
 - `borrowed`: Whenever you borrow `flip_size`,  borrowed += flip_size. And each month as you reduce `borrowed` by `total_cashflow` it reduces.
 - `stack_number`: each time you buy an investment, this number increases
-- `stack_date`: the date that you bought this new investment
-- monthly_roi: the monthly roi expected from this stack
+- `flip_size`
+- `monthly_roi`: the monthly roi expected from this stack
 - `stack_years`: this is a synonym for amortization_years
 
 
@@ -57,4 +57,5 @@ This is what you do each month:
 
 But note well: in month 1, you only perform step 4 above.
 
-The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. 
+The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. By default, show the the first 2 years.
+
