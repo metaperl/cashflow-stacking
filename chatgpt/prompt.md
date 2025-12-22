@@ -57,5 +57,5 @@ This is what you do each month:
 
 But note well: in month 1, you only perform step 4 above.
 
-The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. By default, show the the first 2 years.
+The final thing you need to know is what years of the cashflow stacking to produce. They may just want a specific year. Or perhaps they may want a range of years. By default, show the the first 2 years as an on-screen table.
 
